@@ -23,3 +23,11 @@ class Player_Head(pygame.sprite.Sprite):
     def move(self, x_movement, y_movement):
         self.rect.x += x_movement
         self.rect.y += y_movement
+
+class Body(Player_Head):
+    # ahead_x and ahead_y are the x and y of the body part right in front.
+    def __init__(self, ahead_x, ahead_y):
+        super().__init__()
+
+        self.rect.x = (ahead_x - (self.side_length + 10))
+        self.rect.y = (ahead_y - (self.side_length + 10))
