@@ -19,4 +19,7 @@ class Player_Head(pygame.sprite.Sprite):
 
         self.rect.y = random.randrange((0 + (self.side_length * 4)), 
             (board_height - (self.side_length * 4)))
-            
+
+    def move(self, x_movement, y_movement):
+        self.rect.x += x_movement
+        self.rect.y += y_movement
