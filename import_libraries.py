@@ -3,4 +3,4 @@
 import pygame
 import random
 
-from colors.py import *
+from colors import *
