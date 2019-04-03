@@ -17,6 +17,7 @@ class Game_State(State):
     def __init__(self):
         super().__init__()
 
+        # The object related initialzing.
         self.all_sprites_list = pygame.sprite.Group()
         self.body_chain_list = pygame.sprite.Group()
 
@@ -27,3 +28,11 @@ class Game_State(State):
         self.body = Body(body_chain_list[0].rect.x, body_chain_list[0].rect.y)
         self.all_sprites_list.add(self.body)
         self.body_chain_list.add(self.body)
+
+        self.apple = Apple()
+        self.all_sprites_list.add(self.apple)
+
+        # Player and game specific variables.
+        self.movement_speed = 10
+
+        
