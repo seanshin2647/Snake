@@ -33,6 +33,10 @@ class Game_State(State):
         self.all_sprites_list.add(self.apple)
 
         # Player and game specific variables.
-        self.movement_speed = 10
+        self.x_movement = 8
+        self.y_movement = 8
 
-        
+        self.score = 0
+
+    def render(self, display):
+        self.all_sprites_list.draw(display)
