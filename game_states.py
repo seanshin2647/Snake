@@ -108,6 +108,9 @@ class Game_State(State):
 
             # TODO: Find a way to shorten this. Maybe use Kevin's stack overflow answer.
             # Super ugly. 
+
+            # PRIORITY TODO: Make this actually work after you get the foundations laid out.
+            # Change this to somehow work similarly to the apple's set placement.
             if pressed_buttons[pygame.K_w]:
                 self.y_movement = -8
 
