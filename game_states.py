@@ -70,8 +70,8 @@ class Game_State(State):
     # body move at once with the head. I just left it like that for now to get the 
     # basic game off the ground.
     def update(self):
-        self.player.rect.x += self.x_movement
-        self.player.rect.y += self.y_movement
+        self.head.rect.x += self.x_movement
+        self.head.rect.y += self.y_movement
 
         eat_apple()
 
