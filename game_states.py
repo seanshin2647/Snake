@@ -1,5 +1,9 @@
 from game_classes import *
 
+def kill_game():
+    pygame.quit()
+    quit()
+
 class State():
     def __init__(self):
         pass
@@ -80,3 +84,43 @@ class Game_State(State):
             create_apple()
 
         self.all_sprites_list.update()
+
+    def collide_self(self):
+        if pygame.sprite.spritecollide(self.head, self.body_chain_list, False):
+            return True
+
+    def collide_wall(self):
+        if self.head.rect.x >= (screen_width + self.head.side_length):
+            return True
+        elif self.head.rect.x <= 0:
+            return True
+
+        if self.head.rect.y >= (screen_height + self.head.side_length):
+            return True
+        elif self.head.rect.y <= 0:
+            return True
+
+    def handle_events(self, pressed_buttons, screen_width, screen_height):
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                kill_game()
+
+            # TODO: Find a way to shorten this. Maybe use Kevin's stack overflow answer.
+            # Super ugly. 
+            if pressed_buttons[pygame.K_w]:
+                self.y_movement = -8
+
+            if pressed_buttons[pygame.K_s]:
+                self.y_movement = 8
+
+            if pressed_buttons[pygame.K_a]:
+                self.x_movement = -8
+
+            if pressed_buttons[pygame.K_d]:
+                self.x_movement = 8
+
+        # TODO: Make this transition to the end screen.
+        if collide_wall or collide_self:
+            print(self.score)
+            kill_game()
