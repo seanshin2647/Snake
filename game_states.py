@@ -37,7 +37,7 @@ class Game_State(State):
 
         # Useful for creating new body parts.
         # This creates a new list of the body chain.
-        self.listed_body_chain = list(self.body_chain_list)
+        self.create_body_list()
 
         # I'm sorry for this. Forgive me, whoever is reading this. I should have found
         # a better way to do it than this.
@@ -70,7 +70,7 @@ class Game_State(State):
         self.apple_list.add(self.apple)
 
     def create_body(self, chain_length, display_width, display_height):
-        self.body = Body(self.listed_body_chain[chain_length + 1].rect.x, self.listed_body_chain[chain_length + 1].rect.y,
+        self.body = Body(self.listed_body_chain[chain_length].rect.x, self.listed_body_chain[chain_length].rect.y,
             display_width, display_height)
         self.all_sprites_list.add(self.body)
         self.body_chain_list.add(self.body)
@@ -80,7 +80,7 @@ class Game_State(State):
 
     def eat_apple(self, display_width, display_height):
         if pygame.sprite.spritecollide(self.head, self.apple_list, True):
-            self.create_body(len(body_chain_list))
+            self.create_body(len(self.body_chain_list), display_width, display_height)
             self.score += 1
 
 
@@ -94,7 +94,7 @@ class Game_State(State):
         self.eat_apple(display_width, display_height)
 
         # TODO: Have the apple spawn in a location not taken up by the player's body.
-        if len(apple_list) == 0:
+        if len(self.apple_list) == 0:
             self.create_apple()
 
         self.all_sprites_list.update()
@@ -138,7 +138,9 @@ class Game_State(State):
                 self.x_movement = 8
 
         # TODO: Make this transition to the end screen.
-        if self.collide_wall(display_width, display_height) or self.collide_self():
+        if self.collide_wall(display_width, display_height):
             print(self.score)
             kill_game()
+
+        #or self.collide_self()
             

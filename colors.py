@@ -25,6 +25,11 @@ DARK_RED = (80, 0, 0)
 DARK_GREEN = (0, 80, 0)
 DARK_BLUE = (0, 0, 80)
 
+# Light RGB colors.
+LIGHT_RED = (255, 0, 0)
+LIGHT_GREEN = (0, 255, 0) #Lime
+LIGHT_BLUE = (0, 0, 255)
+
 # Shades of blue and green.
 TURQUOISE = (0, 192, 192)
 
