@@ -18,7 +18,7 @@ class State():
         raise NotImplementedError
 
 class Game_State(State):
-    def __init__(self):
+    def __init__(self, display_width, display_height):
         super().__init__()
 
         # The object related initialzing.
@@ -31,15 +31,22 @@ class Game_State(State):
         # eats an apple.
         self.apple_list = pygame.sprite.Group()
 
-        self.head = Player_Head()
+        self.head = Player_Head(display_width, display_height)
         self.all_sprites_list.add(self.head)
         self.body_chain_list.add(self.head)
 
-        self.body = Body(body_chain_list[0].rect.x, body_chain_list[0].rect.y)
+        # Useful for creating new body parts.
+        # This creates a new list of the body chain.
+        self.listed_body_chain = list(self.body_chain_list)
+
+        # I'm sorry for this. Forgive me, whoever is reading this. I should have found
+        # a better way to do it than this.
+        self.body = Body(self.listed_body_chain[0].rect.x, self.listed_body_chain[0].rect.y,
+            display_width, display_height)
         self.all_sprites_list.add(self.body)
         self.body_chain_list.add(self.body)
 
-        self.apple = Apple()
+        self.apple = Apple(display_width, display_height)
         self.all_sprites_list.add(self.apple)
         self.apple_list.add(self.apple)
 
@@ -51,6 +58,9 @@ class Game_State(State):
 
         self.score = 0
 
+    def create_body_list(self):
+        self.listed_body_chain = list(self.body_chain_list)
+
     def render(self, display):
         self.all_sprites_list.draw(display)
 
@@ -59,29 +69,33 @@ class Game_State(State):
         self.all_sprites_list.add(self.apple)
         self.apple_list.add(self.apple)
 
-    def create_body(self, chain_length):
-        self.body = Body(body_chain_list[chain_length + 1].rect.x, body_chain_list[chain_length + 1].rect.y)
+    def create_body(self, chain_length, display_width, display_height):
+        self.body = Body(self.listed_body_chain[chain_length + 1].rect.x, self.listed_body_chain[chain_length + 1].rect.y,
+            display_width, display_height)
         self.all_sprites_list.add(self.body)
         self.body_chain_list.add(self.body)
 
-    def eat_apple(self):
+        # I need this here to update the list.
+        self.create_body_list()
+
+    def eat_apple(self, display_width, display_height):
         if pygame.sprite.spritecollide(self.head, self.apple_list, True):
-            create_body(len(body_chain_list))
+            self.create_body(len(body_chain_list))
             self.score += 1
 
 
     # TODO: Actually make this work. I have it so that it will probably have the entire
     # body move at once with the head. I just left it like that for now to get the 
     # basic game off the ground.
-    def update(self):
+    def update(self, display_width, display_height):
         self.head.rect.x += self.x_movement
         self.head.rect.y += self.y_movement
 
-        eat_apple()
+        self.eat_apple(display_width, display_height)
 
         # TODO: Have the apple spawn in a location not taken up by the player's body.
         if len(apple_list) == 0:
-            create_apple()
+            self.create_apple()
 
         self.all_sprites_list.update()
 
@@ -89,18 +103,18 @@ class Game_State(State):
         if pygame.sprite.spritecollide(self.head, self.body_chain_list, False):
             return True
 
-    def collide_wall(self):
-        if self.head.rect.x >= (screen_width + self.head.side_length):
+    def collide_wall(self, display_width, display_height):
+        if self.head.rect.x >= (display_width + self.head.side_length):
             return True
         elif self.head.rect.x <= 0:
             return True
 
-        if self.head.rect.y >= (screen_height + self.head.side_length):
+        if self.head.rect.y >= (display_height + self.head.side_length):
             return True
         elif self.head.rect.y <= 0:
             return True
 
-    def handle_events(self, pressed_buttons, screen_width, screen_height):
+    def handle_events(self, pressed_buttons, display_width, display_height):
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -124,6 +138,7 @@ class Game_State(State):
                 self.x_movement = 8
 
         # TODO: Make this transition to the end screen.
-        if collide_wall or collide_self:
+        if self.collide_wall(display_width, display_height) or self.collide_self():
             print(self.score)
             kill_game()
+            
