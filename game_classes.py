@@ -14,9 +14,7 @@ class Player_Head(pygame.sprite.Sprite):
         self.image.fill(BLACK)
         self.rect = self.image.get_rect()
 
-        self.initial_x = random.randrange((0 + (self.side_length * 3)),
-            (board_width - (self.side_length * 3)))
-        self.rect.x = (int(self.initial_x / 10)) * 10
+        self.rect.x = board_width * 0.2
 
         self.initial_y = random.randrange((0 + (self.side_length * 4)), 
             (board_height - (self.side_length * 3)))
