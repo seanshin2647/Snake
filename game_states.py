@@ -51,8 +51,8 @@ class Game_State(State):
         self.apple_list.add(self.apple)
 
         # Player and game specific variables.
-        self.x_movement = 8
-        self.y_movement = 8
+        self.x_movement = 5
+        self.y_movement = 0
 
         self.elapsed_movement = 0
 
@@ -104,12 +104,12 @@ class Game_State(State):
             return True
 
     def collide_wall(self, display_width, display_height):
-        if self.head.rect.x >= (display_width + self.head.side_length):
+        if self.head.rect.x >= (display_width - self.head.side_length):
             return True
         elif self.head.rect.x <= 0:
             return True
 
-        if self.head.rect.y >= (display_height + self.head.side_length):
+        if self.head.rect.y >= (display_height - self.head.side_length):
             return True
         elif self.head.rect.y <= 0:
             return True
@@ -126,16 +126,20 @@ class Game_State(State):
             # PRIORITY TODO: Make this actually work after you get the foundations laid out.
             # Change this to somehow work similarly to the apple's set placement.
             if pressed_buttons[pygame.K_w]:
-                self.y_movement = -8
+                self.y_movement = -5
+                self.x_movement = 0
 
             if pressed_buttons[pygame.K_s]:
-                self.y_movement = 8
+                self.y_movement = 5
+                self.x_movement = 0
 
             if pressed_buttons[pygame.K_a]:
-                self.x_movement = -8
+                self.x_movement = -5
+                self.y_movement = 0
 
             if pressed_buttons[pygame.K_d]:
-                self.x_movement = 8
+                self.x_movement = 5
+                self.y_movement = 0
 
         # TODO: Make this transition to the end screen.
         if self.collide_wall(display_width, display_height):
