@@ -16,11 +16,11 @@ class Player_Head(pygame.sprite.Sprite):
 
         self.initial_x = random.randrange((0 + (self.side_length * 3)),
             (board_width - (self.side_length * 3)))
-        self.rect.x = (int(self.initial_x / 100)) * self.side_length
+        self.rect.x = (int(self.initial_x / 10)) * 10
 
         self.initial_y = random.randrange((0 + (self.side_length * 4)), 
             (board_height - (self.side_length * 3)))
-        self.rect.y = (int(self.initial_y / 100)) * self.side_length
+        self.rect.y = (int(self.initial_y / 10)) * 10
 
     def move(self, x_movement, y_movement):
         self.rect.x += x_movement
@@ -45,9 +45,9 @@ class Apple(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
         self.initial_x = random.randrange(1, (display_width - self.side_length))
-        # This gives us the row the apple will be in instead of the raw corrdinates.
-        self.rect.x = (int(self.initial_x / 100)) * self.side_length
+        # This gives us the row the apple will be in instead of the raw coordinates.
+        self.rect.x = (int(self.initial_x / 10)) * 10
 
         self.initial_y = random.randrange(1, (display_height - self.side_length))
-        # This gives us the column the apple will be in instead of the raw corrdinates.
-        self.rect.y = (int(self.initial_x / 100)) * self.side_length
+        # This gives us the column the apple will be in instead of the raw coordinates.
+        self.rect.y = (int(self.initial_x / 10)) * 10
