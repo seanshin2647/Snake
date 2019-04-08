@@ -115,7 +115,6 @@ class Game_State(State):
             return True
 
     def handle_events(self, pressed_buttons, display_width, display_height):
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 kill_game()
@@ -125,6 +124,10 @@ class Game_State(State):
 
             # PRIORITY TODO: Make this actually work after you get the foundations laid out.
             # Change this to somehow work similarly to the apple's set placement.
+
+            # TODO: Change this part to work similiar to a key down and up as right now,
+            # it only triggers once you have let go of the key instead of pushed
+            # down, which is a problem.
             if pressed_buttons[pygame.K_w]:
                 self.y_movement = -5
                 self.x_movement = 0
