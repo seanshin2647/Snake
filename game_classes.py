@@ -18,29 +18,19 @@ class Player_Head(pygame.sprite.Sprite):
 
         self.initial_y = random.randrange((0 + (self.side_length * 4)), 
             (board_height - (self.side_length * 3)))
-        self.rect.y = (int(self.initial_y / 10)) * 10
+        self.rect.y = (int(self.initial_y / 20)) * 20
 
-        # I do this so that I can change calculated_x and calculated_y without accidentally
-        # changing the actual rect x and y.
-        self.calculated_x = self.rect.y - 0
-        self.calculated_y = self.rect.y - 0
+    def gridset_x(self):
+        self.rect.x = (int(self.rect.x + self.side_length / 20)) * 20
 
-
-    # FIXME: This equation does not work as intended. It rounds it to spots of 10 instead
-    # of 20 like desired.
-    def set_display_x(self):
-        self.rect.x = (int(self.calculated_x / 10)) * 10
-
-    def set_display_y(self):
-        self.rect.y = (int(self.calculated_y / 10)) * 10
+    def gridset_y(self):
+        self.rect.y = (int(self.rect.y + self.side_length / 20)) * 20
 
     def move(self, x_movement, y_movement):
-        self.calculated_x += x_movement
-        self.calculated_y += y_movement
+        self.rect.x += x_movement
+        self.rect.y += y_movement
 
-        self.set_display_x()
-        self.set_display_y()
-
+# TODO: Make this independent. Not a child.
 class Body(Player_Head):
     # ahead_x and ahead_y are the x and y of the body part right in front.
     def __init__(self, ahead_x, ahead_y, display_width, display_height):
@@ -61,8 +51,8 @@ class Apple(pygame.sprite.Sprite):
 
         self.initial_x = random.randrange(1, (display_width - self.side_length))
         # This gives us the row the apple will be in instead of the raw coordinates.
-        self.rect.x = (int(self.initial_x / 10)) * 10
+        self.rect.x = (int(self.initial_x / 20)) * 20
 
         self.initial_y = random.randrange(1, (display_height - self.side_length))
         # This gives us the column the apple will be in instead of the raw coordinates.
-        self.rect.y = (int(self.initial_x / 10)) * 10
+        self.rect.y = (int(self.initial_x / 20)) * 20
