@@ -1,153 +1,68 @@
-from game_classes import *
+# A file for all of the classes I will be using.
 
-def kill_game():
-    pygame.quit()
-    quit()
+from import_libraries import *
 
-class State():
-    def __init__(self):
-        pass
+# I plan on having two classes make up the human player,
+# one for the head and one for the snake sections.
+class Player_Head(pygame.sprite.Sprite):
+    def __init__(self, board_width, board_height):
+        super().__init__()
 
-    def render(self):
-        raise NotImplementedError
+        self.side_length = 20
 
-    def update(self):
-        raise NotImplementedError
+        self.image = pygame.Surface([self.side_length, self.side_length])
+        self.image.fill(BLACK)
+        self.rect = self.image.get_rect()
 
-    def handle_events(self):
-        raise NotImplementedError
+        self.rect.x = board_width * 0.1
 
-class Game_State(State):
+        self.initial_y = random.randrange((0 + (self.side_length * 4)), 
+            (board_height - (self.side_length * 3)))
+        self.rect.y = (int(self.initial_y / 10)) * 10
+
+        # I do this so that I can change calculated_x and calculated_y without accidentally
+        # changing the actual rect x and y.
+        self.calculated_x = self.rect.y - 0
+        self.calculated_y = self.rect.y - 0
+
+
+    # FIXME: This equation does not work as intended. It rounds it to spots of 10 instead
+    # of 20 like desired.
+    def set_display_x(self):
+        self.rect.x = (int(self.calculated_x / 10)) * 10
+
+    def set_display_y(self):
+        self.rect.y = (int(self.calculated_y / 10)) * 10
+
+    def move(self, x_movement, y_movement):
+        self.calculated_x += x_movement
+        self.calculated_y += y_movement
+
+        self.set_display_x()
+        self.set_display_y()
+
+class Body(Player_Head):
+    # ahead_x and ahead_y are the x and y of the body part right in front.
+    def __init__(self, ahead_x, ahead_y, display_width, display_height):
+        super().__init__(display_width, display_height)
+
+        self.rect.x = (ahead_x - (self.side_length + 10))
+        self.rect.y = (ahead_y - (self.side_length + 10))
+
+class Apple(pygame.sprite.Sprite):
     def __init__(self, display_width, display_height):
         super().__init__()
 
-        # The object related initialzing.
-        self.all_sprites_list = pygame.sprite.Group()
-        self.body_chain_list = pygame.sprite.Group()
+        self.side_length = 20
 
-        # Strictly speaking, I don't need this list to exist. However, I am using
-        # it to check if an apple exists on the board at the moment. I might
-        # later change this to a boolean variable that is set to False when the player
-        # eats an apple.
-        self.apple_list = pygame.sprite.Group()
+        self.image = pygame.Surface([self.side_length, self.side_length])
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
 
-        self.head = Player_Head(display_width, display_height)
-        self.all_sprites_list.add(self.head)
-        self.body_chain_list.add(self.head)
+        self.initial_x = random.randrange(1, (display_width - self.side_length))
+        # This gives us the row the apple will be in instead of the raw coordinates.
+        self.rect.x = (int(self.initial_x / 10)) * 10
 
-        # Useful for creating new body parts.
-        # This creates a new list of the body chain.
-        self.create_body_list()
-
-        # I'm sorry for this. Forgive me, whoever is reading this. I should have found
-        # a better way to do it than this.
-        self.body = Body(self.listed_body_chain[0].rect.x, self.listed_body_chain[0].rect.y,
-            display_width, display_height)
-        self.all_sprites_list.add(self.body)
-        self.body_chain_list.add(self.body)
-
-        self.apple = Apple(display_width, display_height)
-        self.all_sprites_list.add(self.apple)
-        self.apple_list.add(self.apple)
-
-        # Player and game specific variables.
-        self.x_movement = 5
-        self.y_movement = 0
-
-        self.elapsed_movement = 0
-
-        self.score = 0
-
-    def create_body_list(self):
-        self.listed_body_chain = list(self.body_chain_list)
-
-    def render(self, display):
-        self.all_sprites_list.draw(display)
-
-    def create_apple(self):
-        apple = Apple()
-        self.all_sprites_list.add(self.apple)
-        self.apple_list.add(self.apple)
-
-    def create_body(self, chain_length, display_width, display_height):
-        self.body = Body(self.listed_body_chain[chain_length].rect.x, self.listed_body_chain[chain_length].rect.y,
-            display_width, display_height)
-        self.all_sprites_list.add(self.body)
-        self.body_chain_list.add(self.body)
-
-        # I need this here to update the list.
-        self.create_body_list()
-
-    def eat_apple(self, display_width, display_height):
-        if pygame.sprite.spritecollide(self.head, self.apple_list, True):
-            self.create_body(len(self.body_chain_list), display_width, display_height)
-            self.score += 1
-
-
-    # TODO: Actually make this work. I have it so that it will probably have the entire
-    # body move at once with the head. I just left it like that for now to get the 
-    # basic game off the ground.
-    def update(self, display_width, display_height):
-        self.head.rect.x += self.x_movement
-        self.head.rect.y += self.y_movement
-
-        self.eat_apple(display_width, display_height)
-
-        # TODO: Have the apple spawn in a location not taken up by the player's body.
-        if len(self.apple_list) == 0:
-            self.create_apple()
-
-        self.all_sprites_list.update()
-
-    def collide_self(self):
-        if pygame.sprite.spritecollide(self.head, self.body_chain_list, False):
-            return True
-
-    def collide_wall(self, display_width, display_height):
-        if self.head.rect.x >= (display_width - self.head.side_length):
-            return True
-        elif self.head.rect.x <= 0:
-            return True
-
-        if self.head.rect.y >= (display_height - self.head.side_length):
-            return True
-        elif self.head.rect.y <= 0:
-            return True
-
-    def handle_events(self, pressed_buttons, display_width, display_height):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                kill_game()
-
-            # TODO: Find a way to shorten this. Maybe use Kevin's stack overflow answer.
-            # Super ugly. 
-
-            # PRIORITY TODO: Make this actually work after you get the foundations laid out.
-            # Change this to somehow work similarly to the apple's set placement.
-
-            # TODO: Change this part to work similiar to a key down and up as right now,
-            # it only triggers once you have let go of the key instead of pushed
-            # down, which is a problem.
-            if pressed_buttons[pygame.K_w]:
-                self.y_movement = -5
-                self.x_movement = 0
-
-            if pressed_buttons[pygame.K_s]:
-                self.y_movement = 5
-                self.x_movement = 0
-
-            if pressed_buttons[pygame.K_a]:
-                self.x_movement = -5
-                self.y_movement = 0
-
-            if pressed_buttons[pygame.K_d]:
-                self.x_movement = 5
-                self.y_movement = 0
-
-        # TODO: Make this transition to the end screen.
-        if self.collide_wall(display_width, display_height):
-            print(self.score)
-            kill_game()
-
-        #or self.collide_self()
-            
+        self.initial_y = random.randrange(1, (display_height - self.side_length))
+        # This gives us the column the apple will be in instead of the raw coordinates.
+        self.rect.y = (int(self.initial_x / 10)) * 10
