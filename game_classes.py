@@ -14,15 +14,32 @@ class Player_Head(pygame.sprite.Sprite):
         self.image.fill(BLACK)
         self.rect = self.image.get_rect()
 
-        self.rect.x = board_width * 0.2
+        self.rect.x = board_width * 0.1
 
         self.initial_y = random.randrange((0 + (self.side_length * 4)), 
             (board_height - (self.side_length * 3)))
         self.rect.y = (int(self.initial_y / 10)) * 10
 
+        # I do this so that I can change calculated_x and calculated_y without accidentally
+        # changing the actual rect x and y.
+        self.calculated_x = self.rect.y - 0
+        self.calculated_y = self.rect.y - 0
+
+
+    # FIXME: This equation does not work as intended. It rounds it to spots of 10 instead
+    # of 20 like desired.
+    def set_display_x(self):
+        self.rect.x = (int(self.calculated_x / 10)) * 10
+
+    def set_display_y(self):
+        self.rect.y = (int(self.calculated_y / 10)) * 10
+
     def move(self, x_movement, y_movement):
-        self.rect.x += x_movement
-        self.rect.y += y_movement
+        self.calculated_x += x_movement
+        self.calculated_y += y_movement
+
+        self.set_display_x()
+        self.set_display_y()
 
 class Body(Player_Head):
     # ahead_x and ahead_y are the x and y of the body part right in front.
