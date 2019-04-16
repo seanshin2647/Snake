@@ -20,11 +20,16 @@ class Player_Head(pygame.sprite.Sprite):
             (board_height - (self.side_length * 3)))
         self.rect.y = (int(self.initial_y / 20)) * 20
 
-    def gridset_x(self):
-        self.rect.x = (int(self.rect.x + self.side_length / 20)) * 20
+    # I added future_movement to differentiate how I calculate the head's rectangular position handling.
+    def gridset_x(self, future_movement):
+        print("Initial X", self.rect.x)
+        self.rect.x = (int((self.rect.x + future_movement) / 20)) * 20
+        print("After Calculations X", self.rect.x)
 
-    def gridset_y(self):
-        self.rect.y = (int(self.rect.y + self.side_length / 20)) * 20
+    def gridset_y(self, future_movement):
+        print("Initial Y", self.rect.y)
+        self.rect.y = (int((self.rect.y + future_movement) / 20)) * 20
+        print("After Calculations", self.rect.y)
 
     def move(self, x_movement, y_movement):
         self.rect.x += x_movement
