@@ -177,7 +177,6 @@ class Game_State(State):
 
         # TODO: Make this transition to the end screen.
         if self.collide_wall(display_width, display_height):
-            print("X and Y at death", self.head.rect.x, self.head.rect.y)
             print("Score: ", self.score)
             kill_game()
 
