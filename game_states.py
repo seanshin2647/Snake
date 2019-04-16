@@ -119,40 +119,66 @@ class Game_State(State):
         elif self.head.rect.y <= 0:
             return True
 
+    #PRIOIRTY FIXME: Sets the x or y really high if a button is clicked.
     def handle_events(self, pressed_buttons, display_width, display_height):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 kill_game()
 
-            # TODO: Find a way to shorten this. Maybe use Kevin's stack overflow answer.
-            # Super ugly. 
+            # TODO: Clean this part up. Please
 
             # TODO: Change this part to work similiar to a key down and up as right now,
             # it only triggers once you have let go of the key instead of pushed
             # down, which is a problem.
-            if pressed_buttons[pygame.K_w]:
-                self.head.gridset_x()
-                self.y_movement = -5
-                self.x_movement = 0
 
-            if pressed_buttons[pygame.K_s]:
-                self.head.gridset_x()
-                self.y_movement = 5
-                self.x_movement = 0
+            if self.x_movement < 0:
+                if pressed_buttons[pygame.K_w]:
+                    self.head.gridset_x(0)
+                    self.y_movement = -5
+                    self.x_movement = 0
 
-            if pressed_buttons[pygame.K_a]:
-                self.head.gridset_y()
-                self.x_movement = -5
-                self.y_movement = 0
+                if pressed_buttons[pygame.K_s]:
+                    self.head.gridset_x(0)
+                    self.y_movement = 5
+                    self.x_movement = 0
 
-            if pressed_buttons[pygame.K_d]:
-                self.head.gridset_y()
-                self.x_movement = 5
-                self.y_movement = 0
+            elif self.x_movement > 0:
+                if pressed_buttons[pygame.K_w]:
+                    self.head.gridset_x(self.head.side_length)
+                    self.y_movement = -5
+                    self.x_movement = 0
+
+                if pressed_buttons[pygame.K_s]:
+                    self.head.gridset_x(self.head.side_length)
+                    self.y_movement = 5
+                    self.x_movement = 0
+
+            if self.y_movement < 0:
+                if pressed_buttons[pygame.K_d]:
+                    self.head.gridset_y(0)
+                    self.y_movement = 0
+                    self.x_movement = 5
+
+                if pressed_buttons[pygame.K_a]:
+                    self.head.gridset_y(0)
+                    self.y_movement = 0
+                    self.x_movement = -5
+
+            elif self.y_movement > 0:
+                if pressed_buttons[pygame.K_d]:
+                    self.head.gridset_y(self.head.side_length)
+                    self.y_movement = 0
+                    self.x_movement = 5
+
+                if pressed_buttons[pygame.K_a]:
+                    self.head.gridset_y(self.head.side_length)
+                    self.y_movement = 0
+                    self.x_movement = -5
 
         # TODO: Make this transition to the end screen.
         if self.collide_wall(display_width, display_height):
-            print(self.score)
+            print("X and Y at death", self.head.rect.x, self.head.rect.y)
+            print("Score: ", self.score)
             kill_game()
 
         #or self.collide_self()
