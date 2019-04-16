@@ -22,14 +22,10 @@ class Player_Head(pygame.sprite.Sprite):
 
     # I added future_movement to differentiate how I calculate the head's rectangular position handling.
     def gridset_x(self, future_movement):
-        print("Initial X", self.rect.x)
         self.rect.x = (int((self.rect.x + future_movement) / 20)) * 20
-        print("After Calculations X", self.rect.x)
 
     def gridset_y(self, future_movement):
-        print("Initial Y", self.rect.y)
         self.rect.y = (int((self.rect.y + future_movement) / 20)) * 20
-        print("After Calculations", self.rect.y)
 
     def move(self, x_movement, y_movement):
         self.rect.x += x_movement
