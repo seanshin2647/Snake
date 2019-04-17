@@ -88,6 +88,7 @@ class Game_State(State):
 
     def update(self, display_width, display_height):
         self.head.move(self.x_movement, self.y_movement)
+        self.snake_movement()
 
         self.eat_apple(display_width, display_height)
 
