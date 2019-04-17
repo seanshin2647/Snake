@@ -37,6 +37,7 @@ class Body(Player_Head):
     def __init__(self, ahead_x, ahead_y, display_width, display_height):
         super().__init__(display_width, display_height)
 
+        # ????????
         self.rect.x = (ahead_x - (self.side_length + 10))
         self.rect.y = (ahead_y - (self.side_length + 10))
 

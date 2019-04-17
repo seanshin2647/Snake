@@ -33,8 +33,9 @@ class Game_State(State):
         self.head = Player_Head(display_width, display_height)
         self.all_sprites_list.add(self.head)
 
+        self.update_segment_list()
 
-        self.body = Body(self.listed_body_chain[0].rect.x, self.listed_body_chain[0].rect.y,
+        self.body = Body(self.listed_segments[0].rect.x, self.listed_segments[0].rect.y,
             display_width, display_height)
         self.all_sprites_list.add(self.body)
         self.segment_list.add(self.body)
@@ -42,6 +43,8 @@ class Game_State(State):
         self.apple = Apple(display_width, display_height)
         self.all_sprites_list.add(self.apple)
         self.apple_list.add(self.apple)
+
+        self.update_segment_list()
 
         # Player and game specific variables.
         self.x_movement = 5
@@ -67,6 +70,7 @@ class Game_State(State):
             display_width, display_height)
         self.all_sprites_list.add(self.body)
         self.segment_list.add(self.body)
+        self.update_segment_list()
 
         # I need this here to update the list.
         self.create_body_list()
