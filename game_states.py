@@ -23,28 +23,21 @@ class Game_State(State):
 
         # The object related initialzing.
         self.all_sprites_list = pygame.sprite.Group()
-        self.body_chain_list = pygame.sprite.Group()
+        self.segment_list = pygame.sprite.Group()
 
-        # Strictly speaking, I don't need this list to exist. However, I am using
-        # it to check if an apple exists on the board at the moment. I might
+        # I am using it to check if an apple exists on the board at the moment. I might
         # later change this to a boolean variable that is set to False when the player
         # eats an apple.
         self.apple_list = pygame.sprite.Group()
 
         self.head = Player_Head(display_width, display_height)
         self.all_sprites_list.add(self.head)
-        self.body_chain_list.add(self.head)
 
-        # Useful for creating new body parts.
-        # This creates a new list of the body chain.
-        self.create_body_list()
 
-        # I'm sorry for this. Forgive me, whoever is reading this. I should have found
-        # a better way to do it than this.
         self.body = Body(self.listed_body_chain[0].rect.x, self.listed_body_chain[0].rect.y,
             display_width, display_height)
         self.all_sprites_list.add(self.body)
-        self.body_chain_list.add(self.body)
+        self.segment_list.add(self.body)
 
         self.apple = Apple(display_width, display_height)
         self.all_sprites_list.add(self.apple)
@@ -56,14 +49,16 @@ class Game_State(State):
 
         self.score = 0
 
-    def create_body_list(self):
-        self.listed_body_chain = list(self.body_chain_list)
+    def update_segment_list(self):
+        self.listed_segments = list(self.segment_list)
+
 
     def render(self, display):
         self.all_sprites_list.draw(display)
 
+
     def create_apple(self):
-        apple = Apple()
+        self.apple = Apple()
         self.all_sprites_list.add(self.apple)
         self.apple_list.add(self.apple)
 
@@ -71,7 +66,7 @@ class Game_State(State):
         self.body = Body(self.listed_body_chain[chain_length].rect.x, self.listed_body_chain[chain_length].rect.y,
             display_width, display_height)
         self.all_sprites_list.add(self.body)
-        self.body_chain_list.add(self.body)
+        self.segment_list.add(self.body)
 
         # I need this here to update the list.
         self.create_body_list()
@@ -79,22 +74,19 @@ class Game_State(State):
     def eat_apple(self, display_width, display_height):
         if pygame.sprite.spritecollide(self.head, self.apple_list, True):
             # FIXME: Does not work. List is continually out of range.
-            self.create_body((len(self.body_chain_list) - 1), display_width, display_height)
+            self.create_body((len(self.segment_list) - 1), display_width, display_height)
             self.score += 1
 
-    # TODO: Actually make this work. I have it so that it will probably have the entire
-    # body move at once with the head. I just left it like that for now to get the 
-    # basic game off the ground.
+    def snake_movement(self):
+        self.listed_segments[0].rect.x, self.listed_segments[0].rect.y = (
+            self.head.rect.x, self.head.rect.y)
 
-    # TODO: Have the body parts move into the place the previous part occupied.
-    # That way, it looks like its moving without having to
-    # code a bunch of weird things that you might have had to do.
-    # Maybe use a for loop to append the x and y positions to a list
-    # so that you can track the current calculated position and use the index that the
-    # variable that is tracking points to to move the entire snake body naturally.
+        for amount in range (len(listed_segments)):
+            self.listed_segments[amount].rect.x, self.listed_segments[amount].rect.y = (
+                self.list_segments[amount - 1].rect.x, self.list_segments[amount - 1].rect.y)
     
+
     def update(self, display_width, display_height):
-        # TODO: Make a for loop for this.
         self.head.move(self.x_movement, self.y_movement)
 
         self.eat_apple(display_width, display_height)
@@ -104,8 +96,9 @@ class Game_State(State):
 
         self.all_sprites_list.update()
 
+
     def collide_self(self):
-        if pygame.sprite.spritecollide(self.head, self.body_chain_list, False):
+        if pygame.sprite.spritecollide(self.head, self.segment_list, False):
             return True
 
     def collide_wall(self, display_width, display_height):
@@ -119,7 +112,7 @@ class Game_State(State):
         elif self.head.rect.y <= 0:
             return True
 
-    #PRIOIRTY FIXME: Sets the x or y really high if a button is clicked.
+
     def handle_events(self, pressed_buttons, display_width, display_height):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
