@@ -35,10 +35,7 @@ class Game_State(State):
 
         self.update_segment_list()
 
-        self.body = Body(self.listed_segments[0].rect.x, self.listed_segments[0].rect.y,
-            display_width, display_height)
-        self.all_sprites_list.add(self.body)
-        self.segment_list.add(self.body)
+        self.initialize_segments(display_width, display_height)
 
         self.apple = Apple(display_width, display_height)
         self.all_sprites_list.add(self.apple)
@@ -47,77 +44,117 @@ class Game_State(State):
         self.update_segment_list()
 
         # Player and game specific variables.
-        self.x_movement = 5
+        self.general_movement = 3
+        self.x_movement = self.general_movement
         self.y_movement = 0
 
+        self.head.rect.x += self.head.side_length
+
         self.score = 0
+
+    def initialize_segments(self, display_width, display_height):
+        self.body = Body(self.head.rect.x, self.head.rect.y)
+        self.all_sprites_list.add(self.body)
+        self.segment_list.add(self.body)
+
+        self.update_segment_list()
+
+        self.create_body((len(self.listed_segments)), display_width, display_height)
 
     def update_segment_list(self):
         self.listed_segments = list(self.segment_list)
 
-
+###
     def render(self, display):
         self.all_sprites_list.draw(display)
+###
 
-
-    def create_apple(self):
-        self.apple = Apple()
+    def create_apple(self, display_width, display_height):
+        self.apple = Apple(display_width, display_height)
         self.all_sprites_list.add(self.apple)
         self.apple_list.add(self.apple)
 
     def create_body(self, chain_length, display_width, display_height):
-        self.body = Body(self.listed_body_chain[chain_length].rect.x, self.listed_body_chain[chain_length].rect.y,
-            display_width, display_height)
+        print("Segment size:", chain_length)
+        self.body = Body(self.listed_segments[chain_length - 1].rect.x, self.listed_segments[chain_length - 1].rect.y)
         self.all_sprites_list.add(self.body)
         self.segment_list.add(self.body)
         self.update_segment_list()
-
-        # I need this here to update the list.
-        self.create_body_list()
+        print("Created new body")
+        print("Length of listed_segments", len(self.listed_segments))
 
     def eat_apple(self, display_width, display_height):
         if pygame.sprite.spritecollide(self.head, self.apple_list, True):
             # FIXME: Does not work. List is continually out of range.
-            self.create_body((len(self.segment_list) - 1), display_width, display_height)
+            self.create_body((len(self.segment_list)), display_width, display_height)
             self.score += 1
 
     def snake_movement(self):
+        for amount in range (len(self.listed_segments)):
+            if amount != 0:
+                self.listed_segments[amount].rect.x, self.listed_segments[amount].rect.y = (
+                    self.listed_segments[amount - 1].rect.x, self.listed_segments[amount - 1].rect.y)
+
         self.listed_segments[0].rect.x, self.listed_segments[0].rect.y = (
-            self.head.rect.x, self.head.rect.y)
+        self.head.rect.x, self.head.rect.y)
 
-        for amount in range (len(listed_segments)):
-            self.listed_segments[amount].rect.x, self.listed_segments[amount].rect.y = (
-                self.list_segments[amount - 1].rect.x, self.list_segments[amount - 1].rect.y)
+
+    def head_movement(self):
+        if self.x_movement != 0:
+            if self.x_movement > 0:
+                self.head.rect.x -= 40
+                self.head.rect.x += self.x_movement
+                self.head.rect.x += 40
+            elif self.x_movement < 0:
+                self.head.rect.x += 40
+                self.head.rect.x += self.x_movement
+                self.head.rect.x -= 40
+
+        if self.y_movement != 0:
+            if self.y_movement > 0:
+                self.head.rect.y -= 40
+                self.head.rect.y += self.y_movement
+                self.head.rect.y += 40
+            elif self.y_movement < 0:
+                self.head.rect.y += 40
+                self.head.rect.y += self.y_movement
+                self.head.rect.y -= 40
     
-
+###
     def update(self, display_width, display_height):
-        self.head.move(self.x_movement, self.y_movement)
         self.snake_movement()
+        self.head_movement_recalc()
 
         self.eat_apple(display_width, display_height)
 
         if len(self.apple_list) == 0:
-            self.create_apple()
+            self.create_apple(display_width, display_height)
 
         self.all_sprites_list.update()
-
+###
 
     def collide_self(self):
         if pygame.sprite.spritecollide(self.head, self.segment_list, False):
             return True
 
     def collide_wall(self, display_width, display_height):
-        if self.head.rect.x >= (display_width - self.head.side_length):
-            return True
-        elif self.head.rect.x <= 0:
-            return True
+        if self.x_movement != 0:
+            if self.x_movement > 0:
+                if (self.head.rect.x + self.head.side_length) >= display_width:
+                    return True
+            elif self.x_movement < 0:
+                if self.head.rect.x <= 0:
+                    return True
 
-        if self.head.rect.y >= (display_height - self.head.side_length):
-            return True
-        elif self.head.rect.y <= 0:
-            return True
+        if self.y_movement != 0:
+            if self.y_movement > 0:
+                if (self.head.rect.y + self.head.side_length) >= display_height:
+                    return True
+            elif self.y_movement < 0:
+                if self.head.rect.y <= 0:
+                    return True
 
-
+###
     def handle_events(self, pressed_buttons, display_width, display_height):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -132,46 +169,46 @@ class Game_State(State):
             if self.x_movement < 0:
                 if pressed_buttons[pygame.K_w]:
                     self.head.gridset_x(0)
-                    self.y_movement = -5
+                    self.y_movement = -1 * self.general_movement
                     self.x_movement = 0
 
                 if pressed_buttons[pygame.K_s]:
                     self.head.gridset_x(0)
-                    self.y_movement = 5
+                    self.y_movement = self.general_movement
                     self.x_movement = 0
 
             elif self.x_movement > 0:
                 if pressed_buttons[pygame.K_w]:
                     self.head.gridset_x(self.head.side_length)
-                    self.y_movement = -5
+                    self.y_movement = -1 * self.general_movement
                     self.x_movement = 0
 
                 if pressed_buttons[pygame.K_s]:
                     self.head.gridset_x(self.head.side_length)
-                    self.y_movement = 5
+                    self.y_movement = self.general_movement
                     self.x_movement = 0
 
             if self.y_movement < 0:
                 if pressed_buttons[pygame.K_d]:
                     self.head.gridset_y(0)
                     self.y_movement = 0
-                    self.x_movement = 5
+                    self.x_movement = self.general_movement
 
                 if pressed_buttons[pygame.K_a]:
                     self.head.gridset_y(0)
                     self.y_movement = 0
-                    self.x_movement = -5
+                    self.x_movement = -1 * self.general_movement
 
             elif self.y_movement > 0:
                 if pressed_buttons[pygame.K_d]:
                     self.head.gridset_y(self.head.side_length)
                     self.y_movement = 0
-                    self.x_movement = 5
+                    self.x_movement = self.general_movement
 
                 if pressed_buttons[pygame.K_a]:
                     self.head.gridset_y(self.head.side_length)
                     self.y_movement = 0
-                    self.x_movement = -5
+                    self.x_movement = -1 * self.general_movement
 
         # TODO: Make this transition to the end screen.
         if self.collide_wall(display_width, display_height):
@@ -179,3 +216,4 @@ class Game_State(State):
             kill_game()
 
         #or self.collide_self()
+###

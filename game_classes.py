@@ -8,7 +8,7 @@ class Player_Head(pygame.sprite.Sprite):
     def __init__(self, board_width, board_height):
         super().__init__()
 
-        self.side_length = 20
+        self.side_length = 30
 
         self.image = pygame.Surface([self.side_length, self.side_length])
         self.image.fill(SILVER)
@@ -18,18 +18,14 @@ class Player_Head(pygame.sprite.Sprite):
 
         self.initial_y = random.randrange((0 + (self.side_length * 4)), 
             (board_height - (self.side_length * 3)))
-        self.rect.y = (int(self.initial_y / 20)) * 20
+        self.rect.y = (int(self.initial_y / self.side_length)) * self.side_length
 
     # I added future_movement to differentiate how I calculate the head's rectangular position handling.
     def gridset_x(self, future_movement):
-        self.rect.x = (int((self.rect.x + future_movement) / 20)) * 20
+        self.rect.x = (int((self.rect.x + future_movement) / self.side_length)) * self.side_length
 
     def gridset_y(self, future_movement):
-        self.rect.y = (int((self.rect.y + future_movement) / 20)) * 20
-
-    def move(self, x_movement, y_movement):
-        self.rect.x += x_movement
-        self.rect.y += y_movement
+        self.rect.y = (int((self.rect.y + future_movement) / self.side_length)) * self.side_length
 
 # TODO: Make this independent. Not a child.
 class Body(pygame.sprite.Sprite):
@@ -37,10 +33,10 @@ class Body(pygame.sprite.Sprite):
     def __init__(self, ahead_x, ahead_y):
         super().__init__()
         
-        self.side_length = 20
+        self.side_length = 30
 
         self.image = pygame.Surface([self.side_length, self.side_length])
-        self.image.fill.(BLACK)
+        self.image.fill(BLACK)
         self.rect = self.image.get_rect()
 
         self.rect.x = ahead_x
@@ -50,7 +46,7 @@ class Apple(pygame.sprite.Sprite):
     def __init__(self, display_width, display_height):
         super().__init__()
 
-        self.side_length = 20
+        self.side_length = 30
 
         self.image = pygame.Surface([self.side_length, self.side_length])
         self.image.fill(RED)
@@ -58,8 +54,8 @@ class Apple(pygame.sprite.Sprite):
 
         self.initial_x = random.randrange(1, (display_width - self.side_length))
         # This gives us the row the apple will be in instead of the raw coordinates.
-        self.rect.x = (int(self.initial_x / 20)) * 20
+        self.rect.x = (int(self.initial_x / self.side_length)) * self.side_length
 
         self.initial_y = random.randrange(1, (display_height - self.side_length))
         # This gives us the column the apple will be in instead of the raw coordinates.
-        self.rect.y = (int(self.initial_x / 20)) * 20
+        self.rect.y = (int(self.initial_x / self.side_length)) * self.side_length
