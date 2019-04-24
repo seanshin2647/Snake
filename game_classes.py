@@ -11,7 +11,7 @@ class Player_Head(pygame.sprite.Sprite):
         self.side_length = 20
 
         self.image = pygame.Surface([self.side_length, self.side_length])
-        self.image.fill(BLACK)
+        self.image.fill(SILVER)
         self.rect = self.image.get_rect()
 
         self.rect.x = board_width * 0.1
@@ -32,14 +32,19 @@ class Player_Head(pygame.sprite.Sprite):
         self.rect.y += y_movement
 
 # TODO: Make this independent. Not a child.
-class Body(Player_Head):
+class Body(pygame.sprite.Sprite):
     # ahead_x and ahead_y are the x and y of the body part right in front.
-    def __init__(self, ahead_x, ahead_y, display_width, display_height):
-        super().__init__(display_width, display_height)
+    def __init__(self, ahead_x, ahead_y):
+        super().__init__()
+        
+        self.side_length = 20
 
-        # ????????
-        self.rect.x = (ahead_x - (self.side_length + 10))
-        self.rect.y = (ahead_y - (self.side_length + 10))
+        self.image = pygame.Surface([self.side_length, self.side_length])
+        self.image.fill.(BLACK)
+        self.rect = self.image.get_rect()
+
+        self.rect.x = ahead_x
+        self.rect.y = ahead_y
 
 class Apple(pygame.sprite.Sprite):
     def __init__(self, display_width, display_height):
