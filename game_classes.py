@@ -30,17 +30,17 @@ class Player_Head(pygame.sprite.Sprite):
 # TODO: Make this independent. Not a child.
 class Body(pygame.sprite.Sprite):
     # ahead_x and ahead_y are the x and y of the body part right in front.
-    def __init__(self, ahead_x, ahead_y):
+    def __init__(self, chain_order):
         super().__init__()
         
+        # This is the index value where the body will get its location from.
+        self.location = chain_order
+
         self.side_length = 30
 
         self.image = pygame.Surface([self.side_length, self.side_length])
         self.image.fill(BLACK)
         self.rect = self.image.get_rect()
-
-        self.rect.x = ahead_x
-        self.rect.y = ahead_y
 
 class Apple(pygame.sprite.Sprite):
     def __init__(self, display_width, display_height):
