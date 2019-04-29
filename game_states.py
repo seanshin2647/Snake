@@ -25,6 +25,9 @@ class Game_State(State):
         self.all_sprites_list = pygame.sprite.Group()
         self.segment_list = pygame.sprite.Group()
 
+        self.x_locations = []
+        self.y_locations = []
+
         # I am using it to check if an apple exists on the board at the moment. I might
         # later change this to a boolean variable that is set to False when the player
         # eats an apple.
@@ -44,7 +47,7 @@ class Game_State(State):
         self.update_segment_list()
 
         # Player and game specific variables.
-        self.general_movement = 3
+        self.general_movement = 5
         self.x_movement = self.general_movement
         self.y_movement = 0
 
@@ -92,8 +95,10 @@ class Game_State(State):
     def snake_movement(self):
         for amount in range (len(self.listed_segments)):
             if amount != 0:
+                self.listed_segments[amount].location += 1
                 self.listed_segments[amount].rect.x, self.listed_segments[amount].rect.y = (
-                    self.listed_segments[amount - 1].rect.x, self.listed_segments[amount - 1].rect.y)
+                    self.x_locations[self.listed_segments[amount].location], 
+                    self.y_locations[self.listed_segments[amount].location])
 
         self.listed_segments[0].rect.x, self.listed_segments[0].rect.y = (
         self.head.rect.x, self.head.rect.y)
