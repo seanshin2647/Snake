@@ -56,13 +56,13 @@ class Game_State(State):
         self.score = 0
 
     def initialize_segments(self, display_width, display_height):
-        self.body = Body(self.head.rect.x, self.head.rect.y)
+        self.body = Body(1)
         self.all_sprites_list.add(self.body)
         self.segment_list.add(self.body)
 
         self.update_segment_list()
 
-        self.create_body((len(self.listed_segments)), display_width, display_height)
+        self.create_body((len(self.listed_segments) + 1), display_width, display_height)
 
     def update_segment_list(self):
         self.listed_segments = list(self.segment_list)
@@ -78,13 +78,10 @@ class Game_State(State):
         self.apple_list.add(self.apple)
 
     def create_body(self, chain_length, display_width, display_height):
-        print("Segment size:", chain_length)
-        self.body = Body(self.listed_segments[chain_length - 1].rect.x, self.listed_segments[chain_length - 1].rect.y)
+        self.body = Body((len(self.listed_segments) + 1))
         self.all_sprites_list.add(self.body)
         self.segment_list.add(self.body)
         self.update_segment_list()
-        print("Created new body")
-        print("Length of listed_segments", len(self.listed_segments))
 
     def eat_apple(self, display_width, display_height):
         if pygame.sprite.spritecollide(self.head, self.apple_list, True):
