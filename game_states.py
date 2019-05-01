@@ -99,11 +99,8 @@ class Game_State(State):
         self.apple_list.add(self.apple)
 
     def snake_movement(self):
-        print("x_locations length: ", len(self.x_locations))
-        print("y_locations length: ", len(self.y_locations))
         for amount in range (len(self.listed_segments) - 1):
             self.listed_segments[amount].location += 1
-            print(self.listed_segments[amount].location)
             self.listed_segments[amount].rect.x, self.listed_segments[amount].rect.y = (
                 self.x_locations[self.listed_segments[amount].location], 
                 self.y_locations[self.listed_segments[amount].location])
