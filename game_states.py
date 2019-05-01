@@ -36,9 +36,8 @@ class Game_State(State):
         self.head = Player_Head(display_width, display_height)
         self.all_sprites_list.add(self.head)
 
-        self.update_segment_list()
-
         self.initialize_segments(display_width, display_height)
+        self.initialize_x_y_lists()
 
         self.apple = Apple(display_width, display_height)
         self.all_sprites_list.add(self.apple)
@@ -55,6 +54,7 @@ class Game_State(State):
 
         self.score = 0
 
+    # TODO: Have this so that the segments start behind the player's head, not on top of it.
     def initialize_segments(self, display_width, display_height):
         self.body = Body(1)
         self.all_sprites_list.add(self.body)
@@ -62,7 +62,16 @@ class Game_State(State):
 
         self.update_segment_list()
 
-        self.create_body((len(self.listed_segments) + 1), display_width, display_height)
+        self.create_body((len(self.listed_segments) + 1))
+
+        self.update_segment_list()
+
+    def initialize_x_y_lists(self):
+        for x in range((len(self.segment_list) * 5)):
+            self.x_locations.append(self.head.rect.x)
+        
+        for y in range((len(self.segment_list) * 5)):
+            self.y_locations.append(self.head.rect.y)
 
     def update_segment_list(self):
         self.listed_segments = list(self.segment_list)
@@ -72,12 +81,7 @@ class Game_State(State):
         self.all_sprites_list.draw(display)
 ###
 
-    def create_apple(self, display_width, display_height):
-        self.apple = Apple(display_width, display_height)
-        self.all_sprites_list.add(self.apple)
-        self.apple_list.add(self.apple)
-
-    def create_body(self, chain_length, display_width, display_height):
+    def create_body(self, chain_length):
         self.body = Body((len(self.listed_segments) + 1))
         self.all_sprites_list.add(self.body)
         self.segment_list.add(self.body)
@@ -86,19 +90,23 @@ class Game_State(State):
     def eat_apple(self, display_width, display_height):
         if pygame.sprite.spritecollide(self.head, self.apple_list, True):
             # FIXME: Does not work. List is continually out of range.
-            self.create_body((len(self.segment_list)), display_width, display_height)
+            self.create_body((len(self.segment_list)))
             self.score += 1
 
-    def snake_movement(self):
-        for amount in range (len(self.listed_segments)):
-            if amount != 0:
-                self.listed_segments[amount].location += 1
-                self.listed_segments[amount].rect.x, self.listed_segments[amount].rect.y = (
-                    self.x_locations[self.listed_segments[amount].location], 
-                    self.y_locations[self.listed_segments[amount].location])
+    def create_apple(self, display_width, display_height):
+        self.apple = Apple(display_width, display_height)
+        self.all_sprites_list.add(self.apple)
+        self.apple_list.add(self.apple)
 
-        self.listed_segments[0].rect.x, self.listed_segments[0].rect.y = (
-        self.head.rect.x, self.head.rect.y)
+    def snake_movement(self):
+        print("x_locations length: ", len(self.x_locations))
+        print("y_locations length: ", len(self.y_locations))
+        for amount in range (len(self.listed_segments) - 1):
+            self.listed_segments[amount].location += 1
+            print(self.listed_segments[amount].location)
+            self.listed_segments[amount].rect.x, self.listed_segments[amount].rect.y = (
+                self.x_locations[self.listed_segments[amount].location], 
+                self.y_locations[self.listed_segments[amount].location])
 
     def x_movement_append(self):
         self.x_locations.append(self.head.rect.x)
