@@ -17,6 +17,7 @@ class State():
     def handle_events(self):
         raise NotImplementedError
 
+# TODO: Implement a background feature to remove unnecessary values in x and y locations list.
 class Game_State(State):
     def __init__(self, display_width, display_height):
         super().__init__()
@@ -62,9 +63,8 @@ class Game_State(State):
 
         self.update_segment_list()
 
-        self.create_body((len(self.listed_segments) + 1))
-
-        self.update_segment_list()
+        self.create_body(len(self.listed_segments))
+        # Already updates segment_list and adds it to its respective lists.
 
     def initialize_x_y_lists(self):
         for x in range((len(self.segment_list) * 5)):
@@ -81,8 +81,9 @@ class Game_State(State):
         self.all_sprites_list.draw(display)
 ###
 
+    # FIXME: Something strange is happening here and I don't know what.
     def create_body(self, chain_length):
-        self.body = Body((len(self.listed_segments) + 1))
+        self.body = Body(chain_length + 1)
         self.all_sprites_list.add(self.body)
         self.segment_list.add(self.body)
         self.update_segment_list()
@@ -99,7 +100,7 @@ class Game_State(State):
         self.apple_list.add(self.apple)
 
     def snake_movement(self):
-        for amount in range (len(self.listed_segments) - 1):
+        for amount in range (len(self.listed_segments)):
             self.listed_segments[amount].location += 1
             self.listed_segments[amount].rect.x, self.listed_segments[amount].rect.y = (
                 self.x_locations[self.listed_segments[amount].location], 
