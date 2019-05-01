@@ -34,7 +34,7 @@ class Body(pygame.sprite.Sprite):
         super().__init__()
         
         # This is the index value where the body will get its location from.
-        self.location = chain_order
+        self.location = chain_order * 6
 
         self.side_length = 30
 
