@@ -100,32 +100,35 @@ class Game_State(State):
         self.listed_segments[0].rect.x, self.listed_segments[0].rect.y = (
         self.head.rect.x, self.head.rect.y)
 
+    def x_movement_append(self):
+        self.x_locations.append(self.head.rect.x)
+
+    def y_movement_append(self):
+        self.y_location.append(self.head.y)
 
     def head_movement(self):
         if self.x_movement != 0:
             if self.x_movement > 0:
-                self.head.rect.x -= 40
                 self.head.rect.x += self.x_movement
-                self.head.rect.x += 40
+                self.x_movement_append()
+
             elif self.x_movement < 0:
-                self.head.rect.x += 40
                 self.head.rect.x += self.x_movement
-                self.head.rect.x -= 40
+                self.x_movement_append()
 
         if self.y_movement != 0:
             if self.y_movement > 0:
-                self.head.rect.y -= 40
                 self.head.rect.y += self.y_movement
-                self.head.rect.y += 40
+                self.y_movement_append()
+
             elif self.y_movement < 0:
-                self.head.rect.y += 40
                 self.head.rect.y += self.y_movement
-                self.head.rect.y -= 40
+                self.y_movement_append()
     
 ###
     def update(self, display_width, display_height):
         self.snake_movement()
-        self.head_movement_recalc()
+        self.head_movement()
 
         self.eat_apple(display_width, display_height)
 
