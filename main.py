@@ -1,3 +1,6 @@
+# Achieved initial capabilities on 0603 Hours UTC - 30/4/2019
+# Brought tears of joy to my eyes. "It works" I exclaimed with joy.
+
 from game_states import *
 
 pygame.init()
@@ -6,7 +9,7 @@ FPS = 60
 DISPLAY_WIDTH = 600
 DISPLAY_HEIGHT = 600
 DISPLAY = pygame.display.set_mode([DISPLAY_WIDTH, DISPLAY_HEIGHT])
-
+5
 clock = pygame.time.Clock()
 
 def main_loop():
