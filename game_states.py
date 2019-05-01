@@ -67,10 +67,10 @@ class Game_State(State):
         # Already updates segment_list and adds it to its respective lists.
 
     def initialize_x_y_lists(self):
-        for x in range((len(self.segment_list) * 5)):
+        for x in range((len(self.listed_segments) * 6) * 2):
             self.x_locations.append(self.head.rect.x)
         
-        for y in range((len(self.segment_list) * 5)):
+        for y in range((len(self.listed_segments) * 6) * 2):
             self.y_locations.append(self.head.rect.y)
 
     def update_segment_list(self):
@@ -100,7 +100,7 @@ class Game_State(State):
         self.apple_list.add(self.apple)
 
     def snake_movement(self):
-        for amount in range (len(self.listed_segments)):
+        for amount in range(len(self.listed_segments)):
             self.listed_segments[amount].location += 1
             self.listed_segments[amount].rect.x, self.listed_segments[amount].rect.y = (
                 self.x_locations[self.listed_segments[amount].location], 
@@ -131,8 +131,8 @@ class Game_State(State):
     
 ###
     def update(self, display_width, display_height):
-        self.snake_movement()
         self.head_movement()
+        self.snake_movement()
 
         self.eat_apple(display_width, display_height)
 
