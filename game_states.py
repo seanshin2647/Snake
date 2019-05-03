@@ -37,8 +37,8 @@ class Game_State(State):
         self.head = Player_Head(display_width, display_height)
         self.all_sprites_list.add(self.head)
 
-        self.initialize_segments(display_width, display_height)
         self.initialize_x_y_lists()
+        self.initialize_segments(display_width, display_height)
 
         self.apple = Apple(display_width, display_height)
         self.all_sprites_list.add(self.apple)
@@ -57,7 +57,7 @@ class Game_State(State):
 
     # TODO: Have this so that the segments start behind the player's head, not on top of it.
     def initialize_segments(self, display_width, display_height):
-        self.body = Body(1, 6)
+        self.body = Body(1, len(self.x_locations))
         self.all_sprites_list.add(self.body)
         self.segment_list.add(self.body)
 
@@ -67,10 +67,10 @@ class Game_State(State):
         # Already updates segment_list and adds it to its respective lists.
 
     def initialize_x_y_lists(self):
-        for x in range((len(self.listed_segments) * 6) + 1):
+        for x in range((2 * 6) + 1):
             self.x_locations.append(self.head.rect.x)
         
-        for y in range((len(self.listed_segments) * 6) + 1):
+        for y in range((2 * 6) + 1):
             self.y_locations.append(self.head.rect.y)
 
     def update_segment_list(self):
@@ -101,10 +101,10 @@ class Game_State(State):
 
     def snake_movement(self):
         for amount in range(len(self.listed_segments)):
-            self.listed_segments[amount].location += 1
             self.listed_segments[amount].rect.x, self.listed_segments[amount].rect.y = (
                 self.x_locations[self.listed_segments[amount].location], 
                 self.y_locations[self.listed_segments[amount].location])
+            self.listed_segments[amount].location += 1
 
     def movement_append(self):
         self.x_locations.append(self.head.rect.x)
