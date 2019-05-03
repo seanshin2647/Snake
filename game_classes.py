@@ -30,11 +30,11 @@ class Player_Head(pygame.sprite.Sprite):
 # TODO: Make this independent. Not a child.
 class Body(pygame.sprite.Sprite):
     # ahead_x and ahead_y are the x and y of the body part right in front.
-    def __init__(self, chain_order):
+    def __init__(self, chain_order, locations_length):
         super().__init__()
         
         # This is the index value where the body will get its location from.
-        self.location = chain_order * 6
+        self.location = locations_length - (chain_order * 6)
 
         self.side_length = 30
 
