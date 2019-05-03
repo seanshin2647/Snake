@@ -57,7 +57,7 @@ class Game_State(State):
 
     # TODO: Have this so that the segments start behind the player's head, not on top of it.
     def initialize_segments(self, display_width, display_height):
-        self.body = Body(1)
+        self.body = Body(1, 6)
         self.all_sprites_list.add(self.body)
         self.segment_list.add(self.body)
 
@@ -67,10 +67,10 @@ class Game_State(State):
         # Already updates segment_list and adds it to its respective lists.
 
     def initialize_x_y_lists(self):
-        for x in range((len(self.listed_segments) * 6) * 2):
+        for x in range((len(self.listed_segments) * 6) + 1):
             self.x_locations.append(self.head.rect.x)
         
-        for y in range((len(self.listed_segments) * 6) * 2):
+        for y in range((len(self.listed_segments) * 6) + 1):
             self.y_locations.append(self.head.rect.y)
 
     def update_segment_list(self):
@@ -83,7 +83,7 @@ class Game_State(State):
 
     # FIXME: Something strange is happening here and I don't know what.
     def create_body(self, chain_length):
-        self.body = Body(chain_length + 1)
+        self.body = Body(chain_length + 1, len(self.x_locations))
         self.all_sprites_list.add(self.body)
         self.segment_list.add(self.body)
         self.update_segment_list()
