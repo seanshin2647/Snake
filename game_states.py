@@ -99,10 +99,7 @@ class Game_State(State):
         self.apple_list.add(self.apple)
 
     def snake_movement(self):
-        print("X Locations: ", len(self.x_locations))
-        print("Y Locations: ", len(self.y_locations))
         for amount in range(len(self.listed_segments)):
-            print("Segment Location: ", self.listed_segments[amount].location)
             self.listed_segments[amount].rect.x, self.listed_segments[amount].rect.y = (
                 self.x_locations[self.listed_segments[amount].location], 
                 self.y_locations[self.listed_segments[amount].location])
@@ -116,14 +113,12 @@ class Game_State(State):
         self.shorten_factor = ((len(self.listed_segments) * 6) * 2)
 
     def shorten_list(self):
+        self.reducing_amount = (len(self.x_locations) - self.shorten_factor)
         self.x_locations = self.x_locations[(len(self.x_locations) - self.shorten_factor):]
         self.y_locations = self.y_locations[(len(self.y_locations) - self.shorten_factor):]
 
         for amount in range(len(self.listed_segments)):
-            print("Got to here")
-            print("Before: ", self.listed_segments[amount].location)
-            self.listed_segments[amount].location -= (len(self.x_locations) - self.shorten_factor)
-            print("After: ", self.listed_segments[amount].location)
+            self.listed_segments[amount].location -= self.reducing_amount
 
     def head_movement(self):
         self.snip_elapsed_time += 1
@@ -150,7 +145,7 @@ class Game_State(State):
         self.head_movement()
         self.snake_movement()
 
-        if self.snip_elapsed_time == 500:
+        if self.snip_elapsed_time == 250:
             self.update_shorten_factor()
             self.shorten_list()
             self.snip_elapsed_time = 0
