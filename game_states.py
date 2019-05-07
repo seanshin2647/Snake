@@ -50,12 +50,12 @@ class Game_State(State):
         self.general_movement = 5
         self.x_movement = self.general_movement
         self.y_movement = 0
+        self.snip_elapsed_time = 0
 
         self.head.rect.x += self.head.side_length
 
         self.score = 0
 
-    # TODO: Have this so that the segments start behind the player's head, not on top of it.
     def initialize_segments(self, display_width, display_height):
         self.body = Body(1, len(self.x_locations))
         self.all_sprites_list.add(self.body)
@@ -81,7 +81,6 @@ class Game_State(State):
         self.all_sprites_list.draw(display)
 ###
 
-    # FIXME: Something strange is happening here and I don't know what.
     def create_body(self, chain_length):
         self.body = Body(chain_length + 1, len(self.x_locations))
         self.all_sprites_list.add(self.body)
@@ -100,7 +99,10 @@ class Game_State(State):
         self.apple_list.add(self.apple)
 
     def snake_movement(self):
+        print("X Locations: ", len(self.x_locations))
+        print("Y Locations: ", len(self.y_locations))
         for amount in range(len(self.listed_segments)):
+            print("Segment Location: ", self.listed_segments[amount].location)
             self.listed_segments[amount].rect.x, self.listed_segments[amount].rect.y = (
                 self.x_locations[self.listed_segments[amount].location], 
                 self.y_locations[self.listed_segments[amount].location])
@@ -110,7 +112,21 @@ class Game_State(State):
         self.x_locations.append(self.head.rect.x)
         self.y_locations.append(self.head.rect.y)
 
+    def update_shorten_factor(self):
+        self.shorten_factor = ((len(self.listed_segments) * 6) * 2)
+
+    def shorten_list(self):
+        self.x_locations = self.x_locations[(len(self.x_locations) - self.shorten_factor):]
+        self.y_locations = self.y_locations[(len(self.y_locations) - self.shorten_factor):]
+
+        for amount in range(len(self.listed_segments)):
+            print("Got to here")
+            print("Before: ", self.listed_segments[amount].location)
+            self.listed_segments[amount].location -= (len(self.x_locations) - self.shorten_factor)
+            print("After: ", self.listed_segments[amount].location)
+
     def head_movement(self):
+        self.snip_elapsed_time += 1
         if self.x_movement != 0:
             if self.x_movement > 0:
                 self.head.rect.x += self.x_movement
@@ -133,6 +149,11 @@ class Game_State(State):
     def update(self, display_width, display_height):
         self.head_movement()
         self.snake_movement()
+
+        if self.snip_elapsed_time == 500:
+            self.update_shorten_factor()
+            self.shorten_list()
+            self.snip_elapsed_time = 0
 
         self.eat_apple(display_width, display_height)
 
