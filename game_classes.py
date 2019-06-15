@@ -27,7 +27,6 @@ class Player_Head(pygame.sprite.Sprite):
     def gridset_y(self, future_movement):
         self.rect.y = (int((self.rect.y + future_movement) / self.side_length)) * self.side_length
 
-# TODO: Make this independent. Not a child.
 class Body(pygame.sprite.Sprite):
     # ahead_x and ahead_y are the x and y of the body part right in front.
     def __init__(self, chain_order, locations_length):
