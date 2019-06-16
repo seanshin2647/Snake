@@ -1,3 +1,6 @@
+# Achieved initial capabilities on 0603 Hours UTC - 30/4/2019
+# Brought tears of joy to my eyes. "It works" I exclaimed with joy.
+
 from game_states import *
 
 pygame.init()
